@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\minec\\RiderProjects\\JackNETFinalProject\\JackNETFinalProject\\JackNETFinalProject.csproj": {}
+    "C:\\Users\\minec\\RiderProjects\\JackDotNetFinalProject\\JackNETFinalProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\minec\\RiderProjects\\JackNETFinalProject\\JackNETFinalProject\\JackNETFinalProject.csproj": {
+    "C:\\Users\\minec\\RiderProjects\\JackDotNetFinalProject\\JackNETFinalProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\minec\\RiderProjects\\JackNETFinalProject\\JackNETFinalProject\\JackNETFinalProject.csproj",
+        "projectUniqueName": "C:\\Users\\minec\\RiderProjects\\JackDotNetFinalProject\\JackNETFinalProject.csproj",
         "projectName": "JackNETFinalProject",
-        "projectPath": "C:\\Users\\minec\\RiderProjects\\JackNETFinalProject\\JackNETFinalProject\\JackNETFinalProject.csproj",
+        "projectPath": "C:\\Users\\minec\\RiderProjects\\JackDotNetFinalProject\\JackNETFinalProject.csproj",
         "packagesPath": "C:\\Users\\minec\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\minec\\RiderProjects\\JackNETFinalProject\\JackNETFinalProject\\obj\\",
+        "outputPath": "C:\\Users\\minec\\RiderProjects\\JackDotNetFinalProject\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -50,13 +50,13 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.2.2, )"
+            },
             "Microsoft.Extensions.Configuration.Json": {
               "target": "Package",
               "version": "[8.0.1, )"
-            },
-            "MySqlConnector": {
-              "target": "Package",
-              "version": "[2.3.7, )"
             },
             "NLog": {
               "target": "Package",

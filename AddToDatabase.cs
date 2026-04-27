@@ -1,4 +1,4 @@
-using MySqlConnector;
+using Microsoft.Data.SqlClient;
 using NLog;
 
 namespace JackNETFinalProject;
@@ -86,13 +86,13 @@ class AddToDatabase
 
             try
             {
-                using (MySqlConnection conn = DatabaseConnection.GetConnection())
+                using (SqlConnection conn = DatabaseConnection.GetConnection())
                 {
                     conn.Open();
                     string query = @"INSERT INTO Products (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued)
                                      VALUES (@ProductName, @SupplierID, @CategoryID, @QuantityPerUnit, @UnitPrice, @UnitsInStock, @UnitsOnOrder, @ReorderLevel, @Discontinued)";
                     
-                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@ProductName", productName);
                         cmd.Parameters.AddWithValue("@SupplierID", supplierId ?? (object)DBNull.Value);

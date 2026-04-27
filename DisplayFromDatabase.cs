@@ -1,4 +1,4 @@
-using MySqlConnector;
+using Microsoft.Data.SqlClient;
 using NLog;
 
 namespace JackNETFinalProject;
@@ -59,12 +59,12 @@ public class DisplayFromDatabase
 
         try
         {
-            using (MySqlConnection conn = DatabaseConnection.GetConnection())
+            using (SqlConnection conn = DatabaseConnection.GetConnection())
             {
                 conn.Open();
                 string query = $"SELECT ProductID, ProductName, Discontinued FROM Products {whereClause} ORDER BY ProductName";
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     Console.WriteLine($"\n--- {optionName} ---");
                     int count = 0;
@@ -111,14 +111,14 @@ public class DisplayFromDatabase
 
         try
         {
-            using (MySqlConnection conn = DatabaseConnection.GetConnection())
+            using (SqlConnection conn = DatabaseConnection.GetConnection())
             {
                 conn.Open();
                 string query = "SELECT * FROM Products WHERE ProductID = @ProductID";
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@ProductID", productId);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
                         {
