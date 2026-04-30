@@ -10,20 +10,22 @@ public class EditToDatabase
     public void EditMenu()
     {
         Logger.Info("User entered Edit menu");
-        
+
+        Console.Clear();
         Console.WriteLine("===================");
         Console.WriteLine("  Edit Product");
         Console.WriteLine("===================");
-        
+
         Console.Write("Enter Product ID to edit: ");
         if (!int.TryParse(Console.ReadLine(), out int productId))
         {
             Console.WriteLine("✗ Invalid Product ID.");
             Logger.Warn("Edit failed: Invalid Product ID provided");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
             return;
         }
 
-        // Load current product
         string? productName = null;
         int? supplierId = null;
         int? categoryId = null;
@@ -61,6 +63,8 @@ public class EditToDatabase
                         {
                             Console.WriteLine("✗ Product not found.");
                             Logger.Warn($"Edit failed: Product ID {productId} not found");
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey(true);
                             return;
                         }
                     }
@@ -71,10 +75,11 @@ public class EditToDatabase
         {
             Console.WriteLine($"✗ Error loading product: {ex.Message}");
             Logger.Error(ex, "Error loading product for edit");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
             return;
         }
 
-        // Prompt for edits
         Console.WriteLine("\nCurrent product found. Enter new values or press Enter to keep existing values.\n");
 
         Console.Write($"Product Name [{productName}]: ");
@@ -84,16 +89,12 @@ public class EditToDatabase
         Console.Write($"Supplier ID [{supplierId?.ToString() ?? "null"}]: ");
         string? newSupplierInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newSupplierInput) && int.TryParse(newSupplierInput, out int newSid))
-        {
             supplierId = newSid;
-        }
 
         Console.Write($"Category ID [{categoryId?.ToString() ?? "null"}]: ");
         string? newCategoryInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newCategoryInput) && int.TryParse(newCategoryInput, out int newCid))
-        {
             categoryId = newCid;
-        }
 
         Console.Write($"Quantity Per Unit [{quantityPerUnit ?? "null"}]: ");
         string? newQtyPerUnit = Console.ReadLine();
@@ -102,39 +103,28 @@ public class EditToDatabase
         Console.Write($"Unit Price [{unitPrice?.ToString() ?? "null"}]: ");
         string? newPriceInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newPriceInput) && decimal.TryParse(newPriceInput, out decimal newUp))
-        {
             unitPrice = newUp;
-        }
 
         Console.Write($"Units In Stock [{unitsInStock?.ToString() ?? "null"}]: ");
         string? newStockInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newStockInput) && short.TryParse(newStockInput, out short newUis))
-        {
             unitsInStock = newUis;
-        }
 
         Console.Write($"Units On Order [{unitsOnOrder?.ToString() ?? "null"}]: ");
         string? newOrderInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newOrderInput) && short.TryParse(newOrderInput, out short newUoo))
-        {
             unitsOnOrder = newUoo;
-        }
 
         Console.Write($"Reorder Level [{reorderLevel?.ToString() ?? "null"}]: ");
         string? newReorderInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newReorderInput) && short.TryParse(newReorderInput, out short newRl))
-        {
             reorderLevel = newRl;
-        }
 
         Console.Write($"Is Discontinued? [{(discontinued ? "y" : "n")}]: ");
         string? discInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(discInput))
-        {
             discontinued = discInput.ToLower() == "y";
-        }
 
-        // Update the product
         try
         {
             using (SqlConnection conn = DatabaseConnection.GetConnection())
@@ -144,7 +134,7 @@ public class EditToDatabase
                                  QuantityPerUnit = @QuantityPerUnit, UnitPrice = @UnitPrice, UnitsInStock = @UnitsInStock,
                                  UnitsOnOrder = @UnitsOnOrder, ReorderLevel = @ReorderLevel, Discontinued = @Discontinued
                                  WHERE ProductID = @ProductID";
-                
+
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@ProductID", productId);
@@ -157,18 +147,21 @@ public class EditToDatabase
                     cmd.Parameters.AddWithValue("@UnitsOnOrder", unitsOnOrder ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@ReorderLevel", reorderLevel ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Discontinued", discontinued);
-                    
+
                     cmd.ExecuteNonQuery();
                 }
             }
-            
-            Console.WriteLine("✓ Product updated successfully.");
+
+            Console.WriteLine("\n✓ Product updated successfully.");
             Logger.Info($"Product ID {productId} updated successfully");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"✗ Error updating product: {ex.Message}");
+            Console.WriteLine($"\n✗ Error updating product: {ex.Message}");
             Logger.Error(ex, "Error updating product in database");
         }
+
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 }

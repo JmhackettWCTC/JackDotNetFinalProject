@@ -10,7 +10,8 @@ public class DisplayFromDatabase
     public void DisplayMenu()
     {
         Logger.Info("User entered Display menu");
-        
+
+        Console.Clear();
         Console.WriteLine("================");
         Console.WriteLine("  Display Menu");
         Console.WriteLine("================");
@@ -19,11 +20,13 @@ public class DisplayFromDatabase
         Console.WriteLine("3) Active (not discontinued) products");
         Console.WriteLine("4) Display specific product by ID");
         Console.Write("Choose option: ");
-        
+
         if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 1 || choice > 4)
         {
             Console.WriteLine("✗ Invalid choice.");
             Logger.Warn("Display failed: Invalid choice provided");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
             return;
         }
 
@@ -66,7 +69,8 @@ public class DisplayFromDatabase
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    Console.WriteLine($"\n--- {optionName} ---");
+                    Console.Clear();
+                    Console.WriteLine($"--- {optionName} ---");
                     int count = 0;
                     while (reader.Read())
                     {
@@ -77,15 +81,11 @@ public class DisplayFromDatabase
                         Console.WriteLine($"{productId}: {name}{suffix}");
                         count++;
                     }
-                    
+
                     if (count == 0)
-                    {
                         Console.WriteLine("(No products found)");
-                    }
                     else
-                    {
                         Console.WriteLine($"\nTotal: {count} product(s)");
-                    }
                 }
             }
             Logger.Info($"Displayed products - Option {option} ({optionName})");
@@ -95,17 +95,22 @@ public class DisplayFromDatabase
             Console.WriteLine($"✗ Error displaying products: {ex.Message}");
             Logger.Error(ex, "Error displaying products from database");
         }
+
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 
     public void DisplaySpecificProduct()
     {
         Logger.Info("User requested specific product display");
-        
+
         Console.Write("Enter Product ID: ");
         if (!int.TryParse(Console.ReadLine(), out int productId))
         {
             Console.WriteLine("✗ Invalid Product ID.");
             Logger.Warn("Specific product display failed: Invalid Product ID");
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
             return;
         }
 
@@ -122,17 +127,18 @@ public class DisplayFromDatabase
                     {
                         if (reader.Read())
                         {
-                            Console.WriteLine("\n--- Product Details ---");
-                            Console.WriteLine($"Product ID: {reader["ProductID"]}");
-                            Console.WriteLine($"Product Name: {reader["ProductName"]}");
-                            Console.WriteLine($"Supplier ID: {(reader["SupplierID"] != DBNull.Value ? reader["SupplierID"] : "N/A")}");
-                            Console.WriteLine($"Category ID: {(reader["CategoryID"] != DBNull.Value ? reader["CategoryID"] : "N/A")}");
-                            Console.WriteLine($"Quantity Per Unit: {(reader["QuantityPerUnit"] != DBNull.Value ? reader["QuantityPerUnit"] : "N/A")}");
-                            Console.WriteLine($"Unit Price: {(reader["UnitPrice"] != DBNull.Value ? reader["UnitPrice"] : "N/A")}");
-                            Console.WriteLine($"Units In Stock: {(reader["UnitsInStock"] != DBNull.Value ? reader["UnitsInStock"] : "N/A")}");
-                            Console.WriteLine($"Units On Order: {(reader["UnitsOnOrder"] != DBNull.Value ? reader["UnitsOnOrder"] : "N/A")}");
-                            Console.WriteLine($"Reorder Level: {(reader["ReorderLevel"] != DBNull.Value ? reader["ReorderLevel"] : "N/A")}");
-                            Console.WriteLine($"Discontinued: {(Convert.ToBoolean(reader["Discontinued"]) ? "Yes" : "No")}");
+                            Console.Clear();
+                            Console.WriteLine("--- Product Details ---");
+                            Console.WriteLine($"Product ID:       {reader["ProductID"]}");
+                            Console.WriteLine($"Product Name:     {reader["ProductName"]}");
+                            Console.WriteLine($"Supplier ID:      {(reader["SupplierID"] != DBNull.Value ? reader["SupplierID"] : "N/A")}");
+                            Console.WriteLine($"Category ID:      {(reader["CategoryID"] != DBNull.Value ? reader["CategoryID"] : "N/A")}");
+                            Console.WriteLine($"Quantity/Unit:    {(reader["QuantityPerUnit"] != DBNull.Value ? reader["QuantityPerUnit"] : "N/A")}");
+                            Console.WriteLine($"Unit Price:       {(reader["UnitPrice"] != DBNull.Value ? reader["UnitPrice"] : "N/A")}");
+                            Console.WriteLine($"Units In Stock:   {(reader["UnitsInStock"] != DBNull.Value ? reader["UnitsInStock"] : "N/A")}");
+                            Console.WriteLine($"Units On Order:   {(reader["UnitsOnOrder"] != DBNull.Value ? reader["UnitsOnOrder"] : "N/A")}");
+                            Console.WriteLine($"Reorder Level:    {(reader["ReorderLevel"] != DBNull.Value ? reader["ReorderLevel"] : "N/A")}");
+                            Console.WriteLine($"Discontinued:     {(Convert.ToBoolean(reader["Discontinued"]) ? "Yes" : "No")}");
                         }
                         else
                         {
@@ -149,5 +155,8 @@ public class DisplayFromDatabase
             Console.WriteLine($"✗ Error displaying product: {ex.Message}");
             Logger.Error(ex, "Error displaying specific product from database");
         }
+
+        Console.WriteLine("\nPress any key to continue...");
+        Console.ReadKey(true);
     }
 }
