@@ -15,7 +15,7 @@ public class DatabaseConnection
         {
             _configuration = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("DatabaseSettings.json")
+                .AddJsonFile("DatabaseSettings.json", optional: true)
                 .Build();
         }
         return _configuration;

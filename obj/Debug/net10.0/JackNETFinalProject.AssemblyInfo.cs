@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JackNETFinalProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3f5ed1e03eed269c4fbdbf931443020ab4ecaedc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+679dcb60eee7b328b6b1a269f84343e678e01bfa")]
 [assembly: System.Reflection.AssemblyProductAttribute("JackNETFinalProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JackNETFinalProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
