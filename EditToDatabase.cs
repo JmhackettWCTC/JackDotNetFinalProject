@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.Data.SqlClient;
 using NLog;
 
@@ -26,15 +27,7 @@ public class EditToDatabase
             return;
         }
 
-        string? productName = null;
-        int? supplierId = null;
-        int? categoryId = null;
-        string? quantityPerUnit = null;
-        decimal? unitPrice = null;
-        short? unitsInStock = null;
-        short? unitsOnOrder = null;
-        short? reorderLevel = null;
-        bool discontinued = false;
+        var product = new Product();
 
         try
         {
@@ -49,15 +42,15 @@ public class EditToDatabase
                     {
                         if (reader.Read())
                         {
-                            productName = reader["ProductName"]?.ToString();
-                            supplierId = reader["SupplierID"] as int?;
-                            categoryId = reader["CategoryID"] as int?;
-                            quantityPerUnit = reader["QuantityPerUnit"]?.ToString();
-                            unitPrice = reader["UnitPrice"] as decimal?;
-                            unitsInStock = reader["UnitsInStock"] as short?;
-                            unitsOnOrder = reader["UnitsOnOrder"] as short?;
-                            reorderLevel = reader["ReorderLevel"] as short?;
-                            discontinued = Convert.ToBoolean(reader["Discontinued"]);
+                            product.ProductName = reader["ProductName"]?.ToString() ?? "";
+                            product.SupplierID = reader["SupplierID"] as int?;
+                            product.CategoryID = reader["CategoryID"] as int?;
+                            product.QuantityPerUnit = reader["QuantityPerUnit"]?.ToString();
+                            product.UnitPrice = reader["UnitPrice"] as decimal?;
+                            product.UnitsInStock = reader["UnitsInStock"] as short?;
+                            product.UnitsOnOrder = reader["UnitsOnOrder"] as short?;
+                            product.ReorderLevel = reader["ReorderLevel"] as short?;
+                            product.Discontinued = Convert.ToBoolean(reader["Discontinued"]);
                         }
                         else
                         {
@@ -82,48 +75,59 @@ public class EditToDatabase
 
         Console.WriteLine("\nCurrent product found. Enter new values or press Enter to keep existing values.\n");
 
-        Console.Write($"Product Name [{productName}]: ");
+        Console.Write($"Product Name [{product.ProductName}]: ");
         string? newName = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(newName)) productName = newName;
+        if (!string.IsNullOrWhiteSpace(newName)) product.ProductName = newName;
 
-        Console.Write($"Supplier ID [{supplierId?.ToString() ?? "null"}]: ");
+        Console.Write($"Supplier ID [{product.SupplierID?.ToString() ?? "null"}]: ");
         string? newSupplierInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newSupplierInput) && int.TryParse(newSupplierInput, out int newSid))
-            supplierId = newSid;
+            product.SupplierID = newSid;
 
-        Console.Write($"Category ID [{categoryId?.ToString() ?? "null"}]: ");
+        Console.Write($"Category ID [{product.CategoryID?.ToString() ?? "null"}]: ");
         string? newCategoryInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newCategoryInput) && int.TryParse(newCategoryInput, out int newCid))
-            categoryId = newCid;
+            product.CategoryID = newCid;
 
-        Console.Write($"Quantity Per Unit [{quantityPerUnit ?? "null"}]: ");
+        Console.Write($"Quantity Per Unit [{product.QuantityPerUnit ?? "null"}]: ");
         string? newQtyPerUnit = Console.ReadLine();
-        if (!string.IsNullOrWhiteSpace(newQtyPerUnit)) quantityPerUnit = newQtyPerUnit;
+        if (!string.IsNullOrWhiteSpace(newQtyPerUnit)) product.QuantityPerUnit = newQtyPerUnit;
 
-        Console.Write($"Unit Price [{unitPrice?.ToString() ?? "null"}]: ");
+        Console.Write($"Unit Price [{product.UnitPrice?.ToString() ?? "null"}]: ");
         string? newPriceInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newPriceInput) && decimal.TryParse(newPriceInput, out decimal newUp))
-            unitPrice = newUp;
+            product.UnitPrice = newUp;
 
-        Console.Write($"Units In Stock [{unitsInStock?.ToString() ?? "null"}]: ");
+        Console.Write($"Units In Stock [{product.UnitsInStock?.ToString() ?? "null"}]: ");
         string? newStockInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newStockInput) && short.TryParse(newStockInput, out short newUis))
-            unitsInStock = newUis;
+            product.UnitsInStock = newUis;
 
-        Console.Write($"Units On Order [{unitsOnOrder?.ToString() ?? "null"}]: ");
+        Console.Write($"Units On Order [{product.UnitsOnOrder?.ToString() ?? "null"}]: ");
         string? newOrderInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newOrderInput) && short.TryParse(newOrderInput, out short newUoo))
-            unitsOnOrder = newUoo;
+            product.UnitsOnOrder = newUoo;
 
-        Console.Write($"Reorder Level [{reorderLevel?.ToString() ?? "null"}]: ");
+        Console.Write($"Reorder Level [{product.ReorderLevel?.ToString() ?? "null"}]: ");
         string? newReorderInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(newReorderInput) && short.TryParse(newReorderInput, out short newRl))
-            reorderLevel = newRl;
+            product.ReorderLevel = newRl;
 
-        Console.Write($"Is Discontinued? [{(discontinued ? "y" : "n")}]: ");
+        Console.Write($"Is Discontinued? [{(product.Discontinued ? "y" : "n")}]: ");
         string? discInput = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(discInput))
-            discontinued = discInput.ToLower() == "y";
+            product.Discontinued = discInput.ToLower() == "y";
+
+        var validationResults = new List<ValidationResult>();
+        if (!Validator.TryValidateObject(product, new ValidationContext(product), validationResults, true))
+        {
+            foreach (var result in validationResults)
+                Console.WriteLine($"✗ {result.ErrorMessage}");
+            Logger.Warn("Edit product failed validation: {0}", string.Join(", ", validationResults.Select(r => r.ErrorMessage)));
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
+            return;
+        }
 
         try
         {
@@ -138,16 +142,15 @@ public class EditToDatabase
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@ProductID", productId);
-                    cmd.Parameters.AddWithValue("@ProductName", productName);
-                    cmd.Parameters.AddWithValue("@SupplierID", supplierId ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@CategoryID", categoryId ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@QuantityPerUnit", quantityPerUnit ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@UnitPrice", unitPrice ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@UnitsInStock", unitsInStock ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@UnitsOnOrder", unitsOnOrder ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@ReorderLevel", reorderLevel ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Discontinued", discontinued);
-
+                    cmd.Parameters.AddWithValue("@ProductName", product.ProductName);
+                    cmd.Parameters.AddWithValue("@SupplierID", product.SupplierID ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CategoryID", product.CategoryID ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@QuantityPerUnit", product.QuantityPerUnit ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@UnitPrice", product.UnitPrice ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@UnitsInStock", product.UnitsInStock ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@UnitsOnOrder", product.UnitsOnOrder ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ReorderLevel", product.ReorderLevel ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Discontinued", product.Discontinued);
                     cmd.ExecuteNonQuery();
                 }
             }
