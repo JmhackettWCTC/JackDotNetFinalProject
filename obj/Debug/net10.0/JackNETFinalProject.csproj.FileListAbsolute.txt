@@ -51,7 +51,6 @@ C:\Users\minec\RiderProjects\JackDotNetFinalProject\obj\Debug\net10.0\refint\Jac
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\obj\Debug\net10.0\JackNETFinalProject.pdb
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\obj\Debug\net10.0\JackNETFinalProject.genruntimeconfig.cache
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\obj\Debug\net10.0\ref\JackNETFinalProject.dll
-C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\DatabaseSettings.json
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\Azure.Core.dll
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\Azure.Identity.dll
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -91,3 +90,4 @@ C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\runtimes\w
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\runtimes\win\lib\net8.0\System.Runtime.Caching.dll
+C:\Users\minec\RiderProjects\JackDotNetFinalProject\bin\Debug\net10.0\nlog.config
